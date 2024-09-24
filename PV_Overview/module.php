@@ -177,11 +177,15 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
                                 $entladungSpeicher = round($SpeicherEntladung_kWh, 2);
                             }
                         }
+                    
                         $SpeicherBeladungID = $this->ReadPropertyInteger('SpeicherBeladungWert');
                         $beladungSpeicher = 0; // Standardwert setzen 
-            
-                        if (IPS_VariableExists($SpeicherBeladungID) && AC_GetLoggingStatus($archivID, $SpeicherBeladungID)) {
-                            $SpeicherBeladung_heute_archiv = AC_GetAggregatedValues($archivID, $SpeicherBeladungID, $aggregation, $zeit, $ende, 0);
+                        $SpeicherLadungsDifferenz = 0; //Neu
+
+                        //Auslesen der Ladedifferenz des Speichers ggü. Vortag
+                        if (IPS_VariableExists($SpeicherBeladungID) /*&& AC_GetLoggingStatus($archivID, $SpeicherBeladungID)*/)
+                        {
+                           /* $SpeicherBeladung_heute_archiv = AC_GetAggregatedValues($archivID, $SpeicherBeladungID, $aggregation, $zeit, $ende, 0);
                             if (!empty($SpeicherBeladung_heute_archiv)) {
                                 foreach($SpeicherBeladung_heute_archiv as $Gesamt) {
                                     $SpeicherBeladung_Avg[] = $Gesamt['Avg'];
@@ -196,6 +200,8 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
                                 }
                                 $beladungSpeicher = round($SpeicherBeladung_kWh, 2);
                             }
+                            */
+                            $SpeicherLadungsDifferenz = round(GetValue($SpeicherBeladungID), 2);
                         }
             
                         $produktionsID = $this->ReadPropertyInteger('ProduktionWert');
@@ -498,12 +504,15 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
             }
             $SpeicherBeladungID = $this->ReadPropertyInteger('SpeicherBeladungWert');
             $beladungSpeicher = 0; // Standardwert setzen 
+            $SpeicherLadungsDifferenz = 0; //Neu
 
-            if (IPS_VariableExists($SpeicherBeladungID) && AC_GetLoggingStatus($archivID, $SpeicherBeladungID)) {
-                $SpeicherBeladung_heute_archiv = AC_GetAggregatedValues($archivID, $SpeicherBeladungID, $aggregation, $zeit, $ende, 0);
+            //Auslesen der Ladedifferenz des Speichers ggü. Vortag
+            if (IPS_VariableExists($SpeicherBeladungID) /*&& AC_GetLoggingStatus($archivID, $SpeicherBeladungID)*/)
+            {
+               /* $SpeicherBeladung_heute_archiv = AC_GetAggregatedValues($archivID, $SpeicherBeladungID, $aggregation, $zeit, $ende, 0);
                 if (!empty($SpeicherBeladung_heute_archiv)) {
-                    foreach($SpeicherBeladung_heute_archiv as $Gesamt2) {
-                        $SpeicherBeladung_Avg[] = $Gesamt2['Avg'];
+                    foreach($SpeicherBeladung_heute_archiv as $Gesamt) {
+                        $SpeicherBeladung_Avg[] = $Gesamt['Avg'];
                     }
                     //Array auf Inhalt prüfen 
                     if (!empty($SpeicherBeladung_Avg)) 
@@ -515,8 +524,10 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
                     }
                     $beladungSpeicher = round($SpeicherBeladung_kWh, 2);
                 }
+                */
+                $SpeicherLadungsDifferenz = round(GetValue($SpeicherBeladungID), 2);
             }
-
+        
             $produktionsID = $this->ReadPropertyInteger('ProduktionWert');
             $produktion = 0; // Standardwert setzen
             
@@ -636,8 +647,7 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
 
 
             if ($this->ReadPropertyBoolean('VerbrauchBerechnen') == true) {
-                $verbrauch = round($produktion - $export - $beladungSpeicher + $entladungSpeicher + $import, 2);
-                                          
+                $verbrauch = round($produktion - $export - $beladungSpeicher + $entladungSpeicher + $import, 2);                            
             }
 
 
