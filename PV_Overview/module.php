@@ -319,11 +319,10 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
 
                         // Berechnungen
                         $eigenverbrauch = round(($produktion - $export), 2);
-                        $eigenproduktion = round($produktion - $export - SpeicherLadungsDifferenz , 2);
+                        $eigenproduktion = round($produktion - $export - $SpeicherLadungsDifferenz , 2);
 
                         if ($this->ReadPropertyBoolean('VerbrauchBerechnen') == true) {
-                            $verbrauch = round($produktion - $export - $beladungSpeicher + $entladungSpeicher + $import, 2);
-                                                      
+                            $verbrauch = round($produktion - $export - $SpeicherLadungsDifferenz + $import, 2);                           
                         }
 
                         // Vermeidung von Division durch Null und Berechnung der Prozentwerte
@@ -647,7 +646,7 @@ class TileVisuPhotovoltaikOverviewTile extends IPSModule
 
 
             if ($this->ReadPropertyBoolean('VerbrauchBerechnen') == true) {
-                $verbrauch = round($produktion - $export - $beladungSpeicher + $entladungSpeicher + $import, 2);                            
+                $verbrauch = round($produktion - $export - $SpeicherLadungsDifferenz + $import, 2);                           
             }
 
 
